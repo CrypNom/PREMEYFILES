@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% from "_macros.html" import project_card with context %}
+{% block title %}{{ project.title }} - {{ site.site_name }}{% endblock %}
+{% block description %}{{ project.description|truncate(150) }}{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container">
+    <a class="link back" href="{{ url_for('projects') }}">&larr; Back to projects</a>
+
+    <div class="detail">
+      <div class="detail-main">
+        <div class="glass detail-image">
+          {% if project.thumbnail %}
+            <img src="{{ url_for('thumbnail', name=project.thumbnail) }}" alt="Preview of {{ project.title }}">
+          {% else %}
+            <div class="thumb-placeholder big"><span>.{{ project.file.extension or 'code' }}</span></div>
+          {% endif %}
+        </div>
+        <div class="glass detail-text">
+          <h2>Description</h2>
+          <p class="prewrap">{{ project.description or 'No description provided.' }}</p>
+        </div>
+      </div>
+
+      <aside class="glass detail-side">
+        <span class="badge badge-cat static">{{ project.category }}</span>
+        <h1>{{ project.title }}</h1>
+        <div class="tags">
+          {% for l in project.languages %}<span class="tag">{{ l.name }}</span>{% endfor %}
+        </div>
+        <dl class="facts">
+          <div><dt>Uploaded</dt><dd>{{ format_date(project.created_at) }}</dd></div>
+          <div><dt>File type</dt><dd>.{{ project.file.extension }}</dd></div>
+          <div><dt>File size</dt><dd>{{ format_size(project.file.size_bytes) }}</dd></div>
+          <div><dt>Downloads</dt><dd>{{ project.downloads }}</dd></div>
+        </dl>
+        <a class="btn btn-primary btn-block btn-lg" href="{{ url_for('download', project_id=project.id) }}">&darr; Download source code</a>
+        <p class="muted small">{{ project.file.original_name }}</p>
+      </aside>
+    </div>
+
+    {% if related %}
+    <div class="section-head related-head"><h2>Related projects</h2></div>
+    <div class="grid">{% for p in related %}{{ project_card(p) }}{% endfor %}</div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

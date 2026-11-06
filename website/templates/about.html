@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}About - {{ site.site_name }}{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container narrow">
+    <h1 class="page-title">About {{ site.site_name }}</h1>
+    <div class="glass about-box">
+      <p class="prewrap">{{ site.about_text }}</p>
+      <ul class="check-list">
+        <li>Browse and search source code, templates and projects</li>
+        <li>Filter by category and programming language</li>
+        <li>Download with one click &ndash; no registration needed</li>
+      </ul>
+      <a class="btn btn-primary" href="{{ url_for('projects') }}">Browse projects</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

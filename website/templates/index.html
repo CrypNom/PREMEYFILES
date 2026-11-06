@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% from "_macros.html" import project_card with context %}
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-inner">
+    <span class="pill">&#9889; {{ site.tagline }}</span>
+    <h1>{{ site.hero_title }}</h1>
+    <p class="lead">{{ site.hero_subtitle }}</p>
+    <form class="hero-search glass" action="{{ url_for('projects') }}" method="get">
+      <input type="search" name="q" placeholder="Search projects, templates, scripts..." maxlength="100" aria-label="Search projects">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    <div class="stats">
+      <div class="glass stat"><strong>{{ stats.projects }}</strong><span>Projects</span></div>
+      <div class="glass stat"><strong>{{ stats.downloads }}</strong><span>Downloads</span></div>
+      <div class="glass stat"><strong>{{ stats.categories }}</strong><span>Categories</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="latest">
+  <div class="container">
+    <div class="section-head">
+      <h2>Latest Uploads</h2>
+      <a class="link" href="{{ url_for('projects') }}">View all &rarr;</a>
+    </div>
+    {% if latest %}
+      <div class="grid">{% for p in latest %}{{ project_card(p) }}{% endfor %}</div>
+    {% else %}
+      <div class="glass empty">
+        <h3>Nothing here yet</h3>
+        <p class="muted">Projects will appear here as soon as they are published.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" id="categories">
+  <div class="container">
+    <div class="section-head"><h2>Source Code Categories</h2></div>
+    <div class="cat-grid">
+      {% for c in categories %}
+        <a class="glass cat-card" href="{{ url_for('projects', category=c.id) }}">
+          <h3>{{ c.name }}</h3>
+          <p class="muted">{{ c.description or 'Browse this category' }}</p>
+          <span class="count">{{ c.projects }} project{{ '' if c.projects == 1 else 's' }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if popular and popular[0].downloads > 0 %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Most Downloaded</h2>
+      <a class="link" href="{{ url_for('projects', sort='popular') }}">See more &rarr;</a>
+    </div>
+    <div class="grid">{% for p in popular %}{{ project_card(p) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section" id="about">
+  <div class="container">
+    <div class="glass about-box">
+      <h2>About {{ site.site_name }}</h2>
+      <p>{{ site.about_text }}</p>
+      <a class="btn btn-ghost" href="{{ url_for('about') }}">Learn more</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="container">
+    <div class="glass about-box center">
+      <h2>Questions or requests?</h2>
+      <p class="muted">Tell us what source code you are looking for.</p>
+      <a class="btn btn-primary" href="{{ url_for('contact') }}">Contact us</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

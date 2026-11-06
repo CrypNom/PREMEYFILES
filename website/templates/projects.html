@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_macros.html" import project_card with context %}
+{% block title %}Browse projects - {{ site.site_name }}{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="container">
+    <h1 class="page-title">Browse projects</h1>
+    <p class="muted">{{ total }} project{{ '' if total == 1 else 's' }} found</p>
+
+    <form class="filters glass" method="get" action="{{ url_for('projects') }}">
+      <input type="search" name="q" value="{{ q }}" placeholder="Search..." maxlength="100" aria-label="Search">
+      <select name="category" aria-label="Category">
+        <option value="">All categories</option>
+        {% for c in nav_categories %}
+          <option value="{{ c.id }}" {{ 'selected' if category_id == c.id }}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+      <select name="language" aria-label="Language">
+        <option value="">All languages</option>
+        {% for l in languages %}
+          <option value="{{ l.id }}" {{ 'selected' if language_id == l.id }}>{{ l.name }}</option>
+        {% endfor %}
+      </select>
+      <select name="sort" aria-label="Sort">
+        <option value="new" {{ 'selected' if sort == 'new' }}>Newest</option>
+        <option value="popular" {{ 'selected' if sort == 'popular' }}>Most downloaded</option>
+      </select>
+      <button class="btn btn-primary" type="submit">Apply</button>
+    </form>
+
+    {% if projects %}
+      <div class="grid">{% for p in projects %}{{ project_card(p) }}{% endfor %}</div>
+      {% if pages > 1 %}
+        <nav class="pager" aria-label="Pages">
+          {% if page > 1 %}
+            <a class="btn btn-ghost" href="{{ url_for('projects', q=q, category=category_id, language=language_id, sort=sort, page=page-1) }}">&larr; Previous</a>
+          {% endif %}
+          <span class="muted">Page {{ page }} of {{ pages }}</span>
+          {% if page < pages %}
+            <a class="btn btn-ghost" href="{{ url_for('projects', q=q, category=category_id, language=language_id, sort=sort, page=page+1) }}">Next &rarr;</a>
+          {% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="glass empty">
+        <h3>No projects found</h3>
+        <p class="muted">Try a different search or <a class="link" href="{{ url_for('projects') }}">clear the filters</a>.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

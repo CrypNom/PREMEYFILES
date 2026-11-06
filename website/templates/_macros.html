@@ -1,0 +1,25 @@
+{# A reusable project card. Used on the home page and the browse page. #}
+{% macro project_card(p) %}
+<article class="card project-card">
+  <a class="thumb" href="{{ url_for('project_detail', project_id=p.id) }}" tabindex="-1" aria-hidden="true">
+    {% if p.thumbnail %}
+      <img src="{{ url_for('thumbnail', name=p.thumbnail) }}" alt="" loading="lazy">
+    {% else %}
+      <div class="thumb-placeholder"><span>.{{ p.file.extension or 'code' }}</span></div>
+    {% endif %}
+    <span class="badge badge-cat">{{ p.category }}</span>
+  </a>
+  <div class="card-body">
+    <h3><a href="{{ url_for('project_detail', project_id=p.id) }}">{{ p.title }}</a></h3>
+    <p class="desc">{{ p.description|truncate(110) }}</p>
+    <div class="tags">
+      {% for l in p.languages[:3] %}<span class="tag">{{ l.name }}</span>{% endfor %}
+    </div>
+    <div class="card-meta">
+      <span>{{ format_date(p.created_at) }}</span>
+      <span>&darr; {{ p.downloads }}</span>
+    </div>
+    <a class="btn btn-primary btn-block" href="{{ url_for('project_detail', project_id=p.id) }}">View &amp; Download</a>
+  </div>
+</article>
+{% endmacro %}
